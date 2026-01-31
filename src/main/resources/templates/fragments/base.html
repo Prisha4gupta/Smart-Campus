@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:fragment="layout(content, scripts)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- CSRF Token Meta Tags -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <title th:text="${pageTitle != null ? pageTitle + ' - Smart Campus' : 'Smart Campus Assistant'}">Smart Campus
+    </title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+    <th:block th:fragment="extra-head"></th:block>
+
+    <!-- Core JS Pre-loading -->
+    <script th:src="@{/js/csrf.js}"></script>
+</head>
+
+<body th:attr="data-user-id=${#authentication.name != 'anonymousUser' ? #authentication.principal.id : ''}">
+    <!-- Header -->
+    <th:block th:replace="~{fragments/header :: navbar}"></th:block>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div sec:authorize="isAuthenticated()" class="sidebar">
+            <th:block th:replace="~{fragments/sidebar :: sidebar}"></th:block>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content flex-grow-1">
+            <div class="container-fluid">
+                <!-- Page Content Injected Here -->
+                <th:block th:replace="${content}"></th:block>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+    <!-- Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/notifications.js}"></script>
+
+    <!-- Init Notifications -->
+    <script sec:authorize="isAuthenticated()">
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.initNotifications) window.initNotifications();
+        });
+    </script>
+
+    <!-- Page Specific Scripts Injected Here -->
+    <th:block th:replace="${scripts}"></th:block>
+</body>
+
+</html>

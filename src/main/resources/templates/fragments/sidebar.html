@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <!-- Sidebar Fragment -->
+    <nav th:fragment="sidebar" class="nav flex-column sidebar-nav">
+        <div class="nav-section-title">Main Menu</div>
+
+        <a class="nav-link" th:href="@{/dashboard}" th:classappend="${currentPage == 'dashboard' ? 'active' : ''}">
+            <i class="bi bi-house-door me-2"></i>Dashboard
+        </a>
+
+        <!-- Student-only menu items -->
+        <div sec:authorize="hasRole('STUDENT')">
+            <a class="nav-link" th:href="@{/timetable}" th:classappend="${currentPage == 'timetable' ? 'active' : ''}">
+                <i class="bi bi-calendar-week me-2"></i>My Timetable
+            </a>
+
+            <a class="nav-link" th:href="@{/enroll}" th:classappend="${currentPage == 'enroll' ? 'active' : ''}">
+                <i class="bi bi-journal-plus me-2"></i>Course Enrollment
+            </a>
+
+            <a class="nav-link" th:href="@{/events}" th:classappend="${currentPage == 'events' ? 'active' : ''}">
+                <i class="bi bi-megaphone me-2"></i>Campus Events
+            </a>
+
+            <a class="nav-link" th:href="@{/student/messages}"
+                th:classappend="${currentPage == 'student/messages' ? 'active' : ''}">
+                <i class="bi bi-chat-left-text me-2"></i>Messages
+            </a>
+        </div>
+
+        <div sec:authorize="hasRole('ADMIN')">
+            <div class="nav-section-title mt-4">Administration</div>
+
+            <a class="nav-link" th:href="@{/admin/courses}"
+                th:classappend="${currentPage == 'admin/courses' ? 'active' : ''}">
+                <i class="bi bi-book me-2"></i>Manage Courses
+            </a>
+
+            <a class="nav-link" th:href="@{/admin/offerings}"
+                th:classappend="${currentPage == 'admin/offerings' ? 'active' : ''}">
+                <i class="bi bi-journal-code me-2"></i>Course Offerings
+            </a>
+
+            <a class="nav-link" th:href="@{/admin/events}"
+                th:classappend="${currentPage == 'admin/events' ? 'active' : ''}">
+                <i class="bi bi-calendar-event me-2"></i>Manage Events
+            </a>
+
+            <a class="nav-link" th:href="@{/admin/faculty}"
+                th:classappend="${currentPage == 'admin/faculty' ? 'active' : ''}">
+                <i class="bi bi-people me-2"></i>Faculty Directory
+            </a>
+
+            <a class="nav-link" th:href="@{/admin/timetable}"
+                th:classappend="${currentPage == 'admin/timetable' ? 'active' : ''}">
+                <i class="bi bi-clock-history me-2"></i>Timetable Entries
+            </a>
+
+            <a class="nav-link" th:href="@{/admin/quizzes}"
+                th:classappend="${currentPage == 'admin/quizzes' ? 'active' : ''}">
+                <i class="bi bi-patch-question me-2"></i>Quiz Management
+            </a>
+
+            <a class="nav-link" th:href="@{/admin/messages}"
+                th:classappend="${currentPage == 'admin/messages' ? 'active' : ''}">
+                <i class="bi bi-chat-left-text me-2"></i>Messages
+            </a>
+        </div>
+
+        <div class="nav-section-title mt-4">Quick Links</div>
+
+        <a class="nav-link" th:href="@{/profile}">
+            <i class="bi bi-person me-2"></i>My Profile
+        </a>
+
+        <a class="nav-link" th:href="@{/settings}">
+            <i class="bi bi-gear me-2"></i>Settings
+        </a>
+
+        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#helpModal">
+            <i class="bi bi-question-circle me-2"></i>Help & Support
+        </a>
+    </nav>
+</body>
+
+</html>

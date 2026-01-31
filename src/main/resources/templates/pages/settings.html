@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="~{fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})}">
+
+<head>
+    <title>Settings - Smart Campus</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <div class="content-wrapper p-4">
+            <!-- Page Header -->
+            <div class="mb-4">
+                <h2 class="mb-1">Settings</h2>
+                <p class="text-muted">Manage your application preferences</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <!-- Notification Settings -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bi bi-bell me-2 text-primary"></i>Notification Preferences</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-3 p-3 rounded-3 bg-light">
+                                <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                <label class="form-check-label fw-bold" for="emailNotifications">Email
+                                    Notifications</label>
+                                <div class="text-muted small">Receive updates via email</div>
+                            </div>
+                            <div class="form-check form-switch mb-3 p-3 rounded-3 bg-light">
+                                <input class="form-check-input" type="checkbox" id="enrollmentNotif" checked>
+                                <label class="form-check-label fw-bold" for="enrollmentNotif">Enrollment Updates</label>
+                                <div class="text-muted small">Notify when enrollment status changes</div>
+                            </div>
+                            <div class="form-check form-switch p-3 rounded-3 bg-light">
+                                <input class="form-check-input" type="checkbox" id="eventNotif" checked>
+                                <label class="form-check-label fw-bold" for="eventNotif">Event Reminders</label>
+                                <div class="text-muted small">Get reminders for events</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Display Settings -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bi bi-palette me-2 text-primary"></i>Display Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Theme</label>
+                                    <select class="form-select" id="theme">
+                                        <option value="light" selected>Light</option>
+                                        <option value="dark">Dark</option>
+                                        <option value="auto">Auto (System)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Dashboard Layout</label>
+                                    <select class="form-select" id="layout">
+                                        <option value="default" selected>Standard</option>
+                                        <option value="compact">Compact</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Settings -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bi bi-shield-check me-2 text-primary"></i>Privacy & Security</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="fw-bold mb-1">Password</h6>
+                                    <p class="text-muted small mb-0">Update your account password</p>
+                                </div>
+                                <a th:href="@{/settings/change-password}" class="btn btn-outline-danger">
+                                    <i class="bi bi-key me-1"></i>Change Password
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bi bi-lightning me-2 text-primary"></i>Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-primary w-100 mb-2" onclick="saveAllSettings()">
+                                <i class="bi bi-check-lg me-1"></i>Save All Settings
+                            </button>
+                            <button class="btn btn-outline-secondary w-100" onclick="resetSettings()">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Reset to Default
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Help -->
+                    <div class="card border-0 bg-primary bg-opacity-10">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-white rounded-circle d-inline-flex p-3 mb-3 shadow-sm">
+                                <i class="bi bi-life-preserver text-primary fs-3"></i>
+                            </div>
+                            <h5 class="fw-bold">Need Help?</h5>
+                            <p class="text-muted small mb-3">Our support team is here to assist you.</p>
+                            <a href="#" class="btn btn-sm btn-primary">Contact Support</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script>
+            function saveAllSettings() {
+                window.scaUtils.showToast('Settings saved successfully!', 'success');
+            }
+
+            function resetSettings() {
+                if (confirm('Reset all settings to default?')) {
+                    window.scaUtils.showToast('Settings reset to default', 'info');
+                }
+            }
+        </script>
+    </th:block>
+</body>
+
+</html>

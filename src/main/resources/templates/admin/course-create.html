@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})">
+
+<head>
+    <title th:text="${courseId != null ? 'Edit' : 'Create'} + ' Course - Admin'">Create Course</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <!-- Page Header -->
+        <div class="mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/courses">Courses</a></li>
+                    <li class="breadcrumb-item active" th:text="${courseId != null ? 'Edit Course' : 'Create Course'}">
+                        Create Course</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-1" th:text="${courseId != null ? 'Edit Course' : 'Create New Course'}">Create New
+                Course</h1>
+            <p class="text-muted">Fill in the course details below</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-bottom-0">
+                        <h5 class="mb-0 card-title fw-bold text-primary"><i class="bi bi-book me-2"></i>Course
+                            Information</h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <form id="courseForm">
+                            <input type="hidden" id="courseId" th:value="${courseId}">
+
+                            <div class="mb-3">
+                                <label for="courseCode" class="form-label fw-bold">Course Code <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="courseCode" placeholder="e.g., CS101"
+                                    required>
+                                <small class="text-muted">Unique identifier for the course</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="courseTitle" class="form-label fw-bold">Course Title <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="courseTitle"
+                                    placeholder="e.g., Introduction to Programming" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="credits" class="form-label fw-bold">Credits <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select" id="credits" required>
+                                    <option value="">Select credits</option>
+                                    <option value="1">1 Credit</option>
+                                    <option value="2">2 Credits</option>
+                                    <option value="3">3 Credits</option>
+                                    <option value="4">4 Credits</option>
+                                    <option value="5">5 Credits</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label fw-bold">Description</label>
+                                <textarea class="form-control" id="description" rows="4"
+                                    placeholder="Enter course description..."></textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                                <a href="/admin/courses" class="btn btn-outline-secondary">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4" onclick="submitCourse(event)">
+                                    <i class="bi bi-check-lg me-1"></i>
+                                    <span th:text="${courseId != null ? 'Update Course' : 'Create Course'}">Create
+                                        Course</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-light border-0 mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-3"><i
+                                class="bi bi-info-circle me-2 text-primary"></i>Guidelines</h5>
+
+                        <h6 class="fw-bold fs-6">Course Code</h6>
+                        <p class="small text-muted mb-3">Use department prefix followed by number (e.g., CS101,
+                            MA201)</p>
+
+                        <h6 class="fw-bold fs-6">Credits</h6>
+                        <p class="small text-muted mb-3">Typically 3-4 credits for regular courses</p>
+
+                        <h6 class="fw-bold fs-6">Description</h6>
+                        <p class="small text-muted mb-0">Provide a clear overview of course content and objectives
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const courseId = /*[[${courseId}]]*/ null;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                if (courseId) {
+                    loadCourseData(courseId);
+                }
+            });
+
+            async function loadCourseData(id) {
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF(`/api/courses/${id}`);
+                    const course = await response.json();
+
+                    document.getElementById('courseCode').value = course.code || '';
+                    document.getElementById('courseTitle').value = course.title || '';
+                    document.getElementById('credits').value = course.credits || '';
+                    document.getElementById('description').value = course.description || '';
+                } catch (error) {
+                    console.error('Error loading course:', error);
+                    window.scaUtils.showToast('Failed to load course data', 'danger');
+                }
+            }
+
+            async function submitCourse(event) {
+                event.preventDefault();
+
+                const courseData = {
+                    code: document.getElementById('courseCode').value,
+                    title: document.getElementById('courseTitle').value,
+                    credits: parseInt(document.getElementById('credits').value),
+                    description: document.getElementById('description').value
+                };
+
+                if (!courseData.code || !courseData.title || !courseData.credits) {
+                    window.scaUtils.showToast('Please fill in all required fields', 'warning');
+                    return;
+                }
+
+                try {
+                    const url = courseId ? `/api/courses/${courseId}` : '/api/courses';
+                    const method = courseId ? 'PUT' : 'POST';
+
+                    const response = await window.scaUtils.fetchWithCSRF(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(courseData)
+                    });
+
+                    if (response.ok) {
+                        window.scaUtils.showToast(`Course ${courseId ? 'updated' : 'created'} successfully!`, 'success');
+                        setTimeout(() => {
+                            window.location.href = '/admin/courses';
+                        }, 1500);
+                    } else {
+                        const error = await response.text();
+                        window.scaUtils.showToast(`Failed to ${courseId ? 'update' : 'create'} course: ${error}`, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Submit error:', error);
+                    window.scaUtils.showToast('An error occurred. Please try again.', 'danger');
+                }
+            }
+            /*]]>*/
+        </script>
+    </th:block>
+</body>
+
+</html>

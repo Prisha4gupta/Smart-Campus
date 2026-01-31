@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})">
+
+<head>
+    <title>Manage Courses - Smart Campus Assistant</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">Manage Courses</h1>
+                <p class="text-muted">View and manage all courses in the system</p>
+            </div>
+            <div>
+                <button class="btn btn-success" onclick="window.location.href='/admin/courses/create'">
+                    <i class="bi bi-plus-circle me-1"></i>Add New Course
+                </button>
+                <button class="btn btn-primary" onclick="loadCourses()">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="card mb-4 shadow-sm border-0">
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Search Courses</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control border-start-0" id="searchCourse"
+                                placeholder="Search by code or title..." onkeyup="filterCourses()">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Credits</label>
+                        <select class="form-select" id="creditFilter" onchange="filterCourses()">
+                            <option value="">All Credits</option>
+                            <option value="1">1 Credit</option>
+                            <option value="2">2 Credits</option>
+                            <option value="3">3 Credits</option>
+                            <option value="4">4 Credits</option>
+                            <option value="5">5 Credits</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Sort By</label>
+                        <select class="form-select" id="sortBy" onchange="filterCourses()">
+                            <option value="code">Code (A-Z)</option>
+                            <option value="title">Title (A-Z)</option>
+                            <option value="credits">Credits</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Table -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 border-bottom-0">
+                <h5 class="mb-0 card-title fw-bold text-primary"><i class="bi bi-book me-2"></i>Courses List</h5>
+            </div>
+            <div class="card-body p-0">
+                <div id="coursesList">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-muted mt-2">Loading courses...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script th:src="@{/js/courses.js}"></script>
+    </th:block>
+</body>
+
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})">
+
+<head>
+    <title>Create Event - Admin</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <!-- Page Header -->
+        <div class="mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/events">Events</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Create Event</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-plus-circle me-2"></i>Create New Event
+            </h1>
+            <p class="text-muted">Add a new campus event or announcement</p>
+        </div>
+
+        <!-- Event Form -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-bottom-0">
+                        <h5 class="mb-0 card-title fw-bold text-primary">
+                            <i class="bi bi-calendar-plus me-2"></i>Event Details
+                        </h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <form id="eventForm" onsubmit="submitEvent(event)">
+                            <!-- Title -->
+                            <div class="mb-3">
+                                <label for="title" class="form-label fw-bold">Event Title <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="title"
+                                    placeholder="e.g., Annual Tech Fest 2025" required maxlength="255">
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-3">
+                                <label for="body" class="form-label fw-bold">Description</label>
+                                <textarea class="form-control" id="body" rows="5"
+                                    placeholder="Event details and description..."></textarea>
+                                <div class="form-text">Provide details about the event</div>
+                            </div>
+
+                            <!-- Start Date & Time -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="startDate" class="form-label fw-bold">Start Date <span
+                                            class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="startDate" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="startTime" class="form-label fw-bold">Start Time <span
+                                            class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" id="startTime" required>
+                                </div>
+                            </div>
+
+                            <!-- End Date & Time -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="endDate" class="form-label fw-bold">End Date</label>
+                                    <input type="date" class="form-control" id="endDate">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="endTime" class="form-label fw-bold">End Time</label>
+                                    <input type="time" class="form-control" id="endTime">
+                                </div>
+                            </div>
+
+                            <!-- Visibility -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Visibility <span class="text-danger">*</span></label>
+                                <div class="card bg-light border-0 p-3">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="isPublic" id="isPublicTrue"
+                                            value="true" checked>
+                                        <label class="form-check-label" for="isPublicTrue">
+                                            <i class="bi bi-globe me-1 text-success"></i>Public
+                                            <small class="text-muted d-block ms-4">Visible to all students on their
+                                                dashboard.</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="isPublic" id="isPublicFalse"
+                                            value="false">
+                                        <label class="form-check-label" for="isPublicFalse">
+                                            <i class="bi bi-lock me-1 text-muted"></i>Private
+                                            <small class="text-muted d-block ms-4">Limited visibility.</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                                <a href="/admin/events" class="btn btn-outline-secondary">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="bi bi-check-lg me-1"></i>Create Event
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="col-lg-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-info-circle me-2"></i>Event Guidelines
+                        </h5>
+                        <ul class="small mb-0">
+                            <li>Use clear, descriptive titles</li>
+                            <li>Include all relevant details in the description</li>
+                            <li>Set accurate date and time information</li>
+                            <li>Public events appear on all students' dashboards</li>
+                            <li>Private events are for specific groups</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card bg-info-subtle mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-bell me-2"></i>Notifications
+                        </h5>
+                        <p class="small mb-0">
+                            Creating a public event will automatically send notifications to all students.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const currentUserId = /*[[${#authentication.principal.id}]]*/ 1;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Set default start date to today
+                const today = new Date().toISOString().split('T')[0];
+                const startDateEl = document.getElementById('startDate');
+                if (startDateEl) startDateEl.value = today;
+            });
+
+            async function submitEvent(e) {
+                e.preventDefault();
+
+                const startDate = document.getElementById('startDate').value;
+                const startTime = document.getElementById('startTime').value;
+                const startDatetime = `${startDate}T${startTime}:00`;
+
+                const endDate = document.getElementById('endDate').value;
+                const endTime = document.getElementById('endTime').value;
+                let endDatetime = null;
+                if (endDate && endTime) {
+                    endDatetime = `${endDate}T${endTime}:00`;
+                }
+
+                const formData = {
+                    title: document.getElementById('title').value.trim(),
+                    body: document.getElementById('body').value.trim() || null,
+                    createdBy: currentUserId,
+                    isPublic: document.querySelector('input[name="isPublic"]:checked').value === 'true',
+                    startDatetime: startDatetime,
+                    endDatetime: endDatetime
+                };
+
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF('/api/events', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response.ok) {
+                        window.scaUtils.showToast('Event created successfully!', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/admin/events';
+                        }, 1500);
+                    } else {
+                        const error = await response.text();
+                        window.scaUtils.showToast(`Failed to create event: ${error}`, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error creating event:', error);
+                    window.scaUtils.showToast('An error occurred. Please try again.', 'danger');
+                }
+            }
+            /*]]>*/
+        </script>
+    </th:block>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})}">
+
+<head>
+    <title>Manage Quiz Attempts - Smart Campus</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <div class="content-wrapper p-4">
+            <div class="mb-4">
+                <a th:href="@{/admin/quizzes}" class="text-decoration-none text-muted">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Quizzes
+                </a>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1" th:text="'Manage Attempts: ' + ${quiz.title}">Quiz Attempts</h2>
+                    <p class="text-muted mb-0">
+                        <span th:text="${quiz.offeringCode + ' - ' + quiz.offeringTitle}">CS101</span>
+                        <span class="mx-2">•</span>
+                        <span>Max Marks: <strong th:text="${quiz.maxMarks}">100</strong></span>
+                    </p>
+                </div>
+                <a th:href="@{/admin/quizzes/{id}/questions(id=${quiz.id})}" class="btn btn-outline-primary">
+                    <i class="bi bi-list-check me-1"></i>Manage Questions
+                </a>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i><span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i><span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Student ID</th>
+                                    <th>Student Name</th>
+                                    <th>Status</th>
+                                    <th>Obtained Marks</th>
+                                    <th class="text-end pe-4">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(attempts)}">
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="bi bi-people fs-1 d-block mb-3"></i>
+                                        No enrolled students found for this quiz.
+                                    </td>
+                                </tr>
+                                <tr th:each="a : ${attempts}">
+                                    <td class="ps-4">
+                                        <span class="badge bg-secondary" th:text="${a.studentId}">1</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center me-3"
+                                                style="width: 40px; height: 40px;">
+                                                <i class="bi bi-person text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-medium" th:text="${a.studentName}">John Doe</div>
+                                                <small class="text-muted" th:text="${a.studentUsername}">johndoe</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                            th:classappend="${a.status == 'GRADED' ? 'bg-success' : (a.status == 'PENDING' ? 'bg-warning text-dark' : 'bg-secondary')}"
+                                            th:text="${a.status}">NOT_ATTEMPTED</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${a.obtainedMarks != null}"
+                                            th:text="${a.obtainedMarks + ' / ' + a.maxMarks}">0 / 100</span>
+                                        <span th:unless="${a.obtainedMarks != null}" class="text-muted">-</span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <div class="btn-group btn-group-sm">
+                                            <!-- Mark as Attempted (only if NOT_ATTEMPTED) -->
+                                            <form th:if="${a.status == 'NOT_ATTEMPTED'}"
+                                                th:action="@{/admin/quizzes/{quizId}/attempts/{studentId}/mark(quizId=${quiz.id}, studentId=${a.studentId})}"
+                                                method="post" class="d-inline">
+                                                <input type="hidden" th:name="${_csrf.parameterName}"
+                                                    th:value="${_csrf.token}" />
+                                                <button type="submit" class="btn btn-outline-primary"
+                                                    title="Mark as Attempted">
+                                                    <i class="bi bi-check-lg me-1"></i>Mark Attempted
+                                                </button>
+                                            </form>
+
+                                            <!-- Grade Attempt (only if PENDING or GRADED) -->
+                                            <a th:if="${a.status != 'NOT_ATTEMPTED'}"
+                                                th:href="@{/admin/quizzes/{quizId}/attempts/{attemptId}/questions(quizId=${quiz.id}, attemptId=${a.attemptId})}"
+                                                class="btn btn-outline-success" title="Grade Attempt">
+                                                <i class="bi bi-pencil-square me-1"></i>Grade
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4 border-0 bg-light">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="h4 mb-0" th:text="${#lists.size(attempts)}">0</div>
+                            <small class="text-muted">Total Students</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="h4 mb-0" th:text="${#lists.size(attempts.?[status != 'NOT_ATTEMPTED'])}">0</div>
+                            <small class="text-muted">Attempted</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="h4 mb-0" th:text="${#lists.size(attempts.?[status == 'GRADED'])}">0</div>
+                            <small class="text-muted">Graded</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script></script>
+    </th:block>
+</body>
+
+</html>

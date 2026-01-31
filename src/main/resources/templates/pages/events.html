@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="~{fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})}">
+
+<head>
+    <title>Campus Events - Smart Campus</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <div class="content-wrapper p-4">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1">Campus Events</h2>
+                    <p class="text-muted">Stay updated with upcoming campus activities</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary" onclick="loadEvents()">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <ul class="nav nav-tabs mb-4" id="eventTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-semibold" id="upcoming-tab" data-bs-toggle="tab"
+                        data-bs-target="#upcoming" type="button" role="tab">
+                        <i class="bi bi-calendar-event me-2"></i>Upcoming
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-semibold" id="all-tab" data-bs-toggle="tab" data-bs-target="#all"
+                        type="button" role="tab">
+                        <i class="bi bi-list-ul me-2"></i>All Events
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="eventTabsContent">
+                <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
+                    <div class="row g-4" id="upcomingEventsList">
+                        <div class="col-12 text-center py-5">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="text-muted mt-2">Loading upcoming events...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="all" role="tabpanel">
+                    <div class="row g-4" id="allEventsList">
+                        <div class="col-12 text-center py-5">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="text-muted mt-2">Loading all events...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                loadEvents();
+            });
+
+            async function loadEvents() {
+                try {
+                    const upRes = await window.scaUtils.fetchWithCSRF('/api/events/upcoming');
+                    const upEvents = await upRes.json();
+                    displayEvents(upEvents, 'upcomingEventsList');
+
+                    const allRes = await window.scaUtils.fetchWithCSRF('/api/events/public');
+                    const allEvents = await allRes.json();
+                    displayEvents(allEvents, 'allEventsList');
+                } catch (error) {
+                    console.error('Error loading events:', error);
+                    showError('upcomingEventsList');
+                    showError('allEventsList');
+                }
+            }
+
+            function displayEvents(events, containerId) {
+                const container = document.getElementById(containerId);
+                if (!events || events.length === 0) {
+                    container.innerHTML = '<div class="col-12 text-center py-5"><i class="bi bi-calendar-x fs-1 text-muted"></i><p class="text-muted mt-3">No events found</p></div>';
+                    return;
+                }
+                container.innerHTML = events.map(event => `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h5 class="card-title fw-bold">${escapeHtml(event.title)}</h5>
+                                    <span class="badge bg-${getStatusColor(event.startDatetime)}">${getStatus(event.startDatetime)}</span>
+                                </div>
+                                <div class="text-muted small mb-2"><i class="bi bi-calendar3 me-2"></i>${formatDate(event.startDatetime)}</div>
+                                <div class="text-muted small mb-3"><i class="bi bi-clock me-2"></i>${formatTime(event.startDatetime, event.endDatetime)}</div>
+                                <p class="card-text text-muted small">${escapeHtml(event.body || 'No description')}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function formatDate(dt) {
+                return new Date(dt).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+            }
+
+            function formatTime(start, end) {
+                const s = new Date(start).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                return end ? s + ' - ' + new Date(end).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : s;
+            }
+
+            function getStatus(dt) {
+                const days = Math.ceil((new Date(dt) - new Date()) / 86400000);
+                if (days < 0) return 'Past';
+                if (days === 0) return 'Today';
+                if (days === 1) return 'Tomorrow';
+                if (days <= 7) return 'This Week';
+                return 'Upcoming';
+            }
+
+            function getStatusColor(dt) {
+                const s = getStatus(dt);
+                return s === 'Today' ? 'danger' : s === 'Tomorrow' ? 'warning' : s === 'This Week' ? 'info' : s === 'Past' ? 'secondary' : 'success';
+            }
+
+            function showError(containerId) {
+                document.getElementById(containerId).innerHTML = '<div class="col-12 text-center py-5 text-danger"><i class="bi bi-exclamation-triangle fs-1"></i><p>Error loading events</p></div>';
+            }
+
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        </script>
+    </th:block>
+</body>
+
+</html>

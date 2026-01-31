@@ -1,0 +1,451 @@
+/* ================================================
+   Smart Campus Assistant - Modern Theme
+   Design System: University Grade (Clean, Blue, Academic)
+   ================================================ */
+
+:root {
+    /* --- Color Palette --- */
+    --primary: #0052CC;       /* Academic Deep Blue */
+    --primary-hover: #0045AD;
+    --primary-light: #E9F2FF; /* For active states/backgrounds */
+    
+    --secondary: #00A3FF;     /* Cyan Accent */
+    --secondary-hover: #0082CC;
+    
+    --bg-body: #F4F5F7;       /* Light cool grey */
+    --bg-surface: #FFFFFF;    /* Pure white */
+    
+    --text-dark: #172B4D;     /* High contrast body text */
+    --text-medium: #42526E;
+    --text-muted: #6B778C;
+    
+    --border-color: #DFE1E6;
+    --border-focus: #4C9AFF;
+    
+    --success: #36B37E;
+    --warning: #FFAB00;
+    --danger: #DE350B;
+    --info: #0065FF;
+
+    /* --- Dimensions & Spacing --- */
+    --header-height: 64px;
+    --sidebar-width: 260px;
+    --border-radius: 8px;
+    --border-radius-sm: 4px;
+    
+    /* --- Shadows --- */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 8px rgba(9, 30, 66, 0.12), 0 0 1px rgba(9, 30, 66, 0.15);
+    --shadow-lg: 0 8px 16px rgba(9, 30, 66, 0.15);
+    
+    /* --- Typography --- */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ================= Base Styles ================= */
+
+html, body {
+    height: 100%;
+    font-family: var(--font-family);
+    background-color: var(--bg-body);
+    color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px; /* Slightly compact base size */
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+h1, .h1 { font-size: 24px; letter-spacing: -0.01em; }
+h2, .h2 { font-size: 20px; letter-spacing: -0.01em; }
+h3, .h3 { font-size: 16px; font-weight: 600; }
+h4, .h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); }
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* ================= Layout ================= */
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+.main-content {
+    background-color: var(--bg-body);
+    min-height: calc(100vh - var(--header-height));
+    padding-top: 24px;
+    padding-bottom: 48px;
+}
+
+/* ================= Header (Navbar) ================= */
+
+.navbar-custom {
+    background-color: var(--primary);
+    background: linear-gradient(to right, #0052CC, #0747A6); /* Subtle gradient for depth */
+    height: var(--header-height);
+    box-shadow: var(--shadow-sm);
+    padding: 0 1rem;
+    z-index: 1000;
+}
+
+.navbar-custom .navbar-brand {
+    font-weight: 700;
+    font-size: 18px;
+    color: white !important;
+    letter-spacing: -0.01em;
+}
+
+.navbar-custom .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 0.5rem 1rem !important;
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.15s;
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link.active {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-custom .dropdown-menu {
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    border-radius: var(--border-radius);
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.navbar-custom .dropdown-item {
+    padding: 8px 16px;
+    color: var(--text-dark);
+}
+
+.navbar-custom .dropdown-item:hover {
+    background-color: var(--bg-body);
+    color: var(--primary);
+}
+
+.navbar-custom .badge-danger {
+    background-color: var(--danger) !important;
+}
+
+/* ================= Sidebar ================= */
+
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border-color);
+    position: sticky;
+    top: var(--header-height);
+    height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+    padding: 24px 0;
+    z-index: 900;
+}
+
+.sidebar .nav-section {
+    padding: 0 12px;
+    margin-bottom: 24px;
+}
+
+.sidebar .nav-section-title {
+    padding: 0 12px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    color: var(--text-medium);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: 4px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.sidebar .nav-link i {
+    width: 24px;
+    font-size: 16px;
+    margin-right: 8px;
+    color: var(--text-muted);
+    transition: color 0.15s;
+}
+
+.sidebar .nav-link:hover {
+    background-color: var(--bg-body);
+    color: var(--text-dark);
+    text-decoration: none;
+}
+
+.sidebar .nav-link:hover i {
+    color: var(--text-dark);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+.sidebar .nav-link.active i {
+    color: var(--primary);
+}
+
+/* ================= Cards ================= */
+
+.card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px 20px;
+    font-weight: 600;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* ================= Buttons ================= */
+
+.btn {
+    font-weight: 500;
+    border-radius: var(--border-radius-sm);
+    padding: 8px 16px;
+    font-size: 14px;
+    transition: all 0.15s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-success { background-color: var(--success); border-color: var(--success); }
+.btn-danger { background-color: var(--danger); border-color: var(--danger); }
+.btn-warning { background-color: var(--warning); border-color: var(--warning); color: #172B4D; }
+
+/* ================= Tables ================= */
+
+.table {
+    margin-bottom: 0;
+    color: var(--text-dark);
+}
+
+.table thead th {
+    background-color: var(--bg-body);
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-color);
+    padding: 12px 16px;
+    vertical-align: middle;
+}
+
+.table tbody td {
+    padding: 12px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-medium);
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--background-body);
+}
+
+/* ================= Forms ================= */
+
+.form-control, .form-select {
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    font-size: 14px;
+    color: var(--text-dark);
+    background-color: var(--bg-surface);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(76, 154, 255, 0.2);
+}
+
+.form-label {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--text-medium);
+    margin-bottom: 6px;
+}
+
+/* ================= Dashboard Specific ================= */
+
+.widget-card .icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background-color: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.info-item {
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+/* ================= Timetable ================= */
+
+.timetable-grid {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    gap: 1px;
+    background-color: var(--border-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.timetable-cell {
+    background-color: var(--bg-surface);
+    padding: 8px;
+    min-height: 100px;
+    position: relative;
+}
+
+.timetable-cell.header {
+    background-color: var(--bg-body);
+    color: var(--text-medium);
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timetable-cell.time-slot {
+    background-color: var(--bg-body);
+    color: var(--text-muted);
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 12px;
+    font-size: 12px;
+}
+
+.class-block {
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-left: 3px solid var(--primary);
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    height: 100%;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.class-block:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-sm);
+    background-color: #DEEBFF; /* Slightly darker light blue */
+}
+
+/* ================= Footer ================= */
+
+.footer {
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border-color);
+    padding: 24px 0;
+    margin-top: auto;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* ================= Utilities ================= */
+
+.text-primary { color: var(--primary) !important; }
+.bg-primary { background-color: var(--primary) !important; }
+.bg-light { background-color: var(--bg-body) !important; }
+.border-0 { border: none !important; }
+.rounded-3 { border-radius: var(--border-radius) !important; }
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+
+/* Notification badge */
+.badge-notification {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    padding: 3px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main-content { padding-left: 15px; padding-right: 15px; }
+}

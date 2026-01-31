@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})">
+
+<head>
+    <title th:text="${entryId != null ? 'Edit' : 'Create'} + ' Timetable Entry - Admin'">Create Timetable Entry</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <!-- Page Header -->
+        <div class="mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/timetable">Timetable</a></li>
+                    <li class="breadcrumb-item active" th:text="${entryId != null ? 'Edit Entry' : 'Add Entry'}">Add
+                        Entry</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-1" th:text="${entryId != null ? 'Edit Timetable Entry' : 'Add New Timetable Entry'}">
+                Add New Timetable Entry</h1>
+            <p class="text-muted">Fill in the timetable entry details below</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-bottom-0">
+                        <h5 class="mb-0 card-title fw-bold text-primary"><i class="bi bi-clock me-2"></i>Timetable
+                            Entry Information</h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <form id="timetableForm">
+                            <input type="hidden" id="entryId" th:value="${entryId}">
+
+                            <div class="mb-3">
+                                <label for="offeringId" class="form-label fw-bold">Course Offering <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select" id="offeringId" required>
+                                    <option value="">Select course offering</option>
+                                </select>
+                                <small class="text-muted">Select the course section for this timetable entry</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="dayOfWeek" class="form-label fw-bold">Day of Week <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select" id="dayOfWeek" required>
+                                    <option value="">Select day</option>
+                                    <option value="2">Monday</option>
+                                    <option value="3">Tuesday</option>
+                                    <option value="4">Wednesday</option>
+                                    <option value="5">Thursday</option>
+                                    <option value="6">Friday</option>
+                                    <option value="7">Saturday</option>
+                                    <option value="1">Sunday</option>
+                                </select>
+                                <small class="text-muted">Select the day when this class meets</small>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="startTime" class="form-label fw-bold">Start Time <span
+                                            class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" id="startTime" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="endTime" class="form-label fw-bold">End Time <span
+                                            class="text-danger">*</span></label>
+                                    <input type="time" class="form-control" id="endTime" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="room" class="form-label fw-bold">Room/Location</label>
+                                <input type="text" class="form-control" id="room" placeholder="e.g., Room 101, Lab A">
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                                <a href="/admin/timetable" class="btn btn-outline-secondary">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4" onclick="submitEntry(event)">
+                                    <i class="bi bi-check-lg me-1"></i>
+                                    <span th:text="${entryId != null ? 'Update Entry' : 'Add Entry'}">Add
+                                        Entry</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-light border-0 mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-3"><i
+                                class="bi bi-info-circle me-2 text-primary"></i>Guidelines</h5>
+
+                        <h6 class="fw-bold fs-6">Course Offering</h6>
+                        <p class="small text-muted mb-3">Select the specific course section this entry is for</p>
+
+                        <h6 class="fw-bold fs-6">Time Format</h6>
+                        <p class="small text-muted mb-3">Use 24-hour format. Ensure end time is after start time</p>
+
+                        <h6 class="fw-bold fs-6">Day of Week</h6>
+                        <p class="small text-muted mb-0">Each timetable entry represents one meeting time. Add
+                            multiple entries for classes that meet on different days.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const entryId = /*[[${entryId}]]*/ null;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                loadOfferings();
+                if (entryId) {
+                    loadEntryData(entryId);
+                }
+            });
+
+            async function loadOfferings() {
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF('/api/offerings');
+                    const offerings = await response.json();
+
+                    const select = document.getElementById('offeringId');
+                    offerings.forEach(offering => {
+                        const option = document.createElement('option');
+                        option.value = offering.id;
+                        // Fix: offering.course is nested object with code property
+                        const courseCode = offering.course ? offering.course.code : 'N/A';
+                        const courseTitle = offering.course ? offering.course.title : '';
+                        option.textContent = `${courseCode} - ${offering.sectionCode} (${offering.semester})`;
+                        select.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error loading offerings:', error);
+                    window.scaUtils.showToast('Failed to load course offerings', 'danger');
+                }
+            }
+
+            async function loadEntryData(id) {
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF(`/api/timetable-entries/${id}`);
+                    const entry = await response.json();
+
+                    document.getElementById('offeringId').value = entry.offeringId || '';
+                    document.getElementById('dayOfWeek').value = entry.dayOfWeek || '';
+                    // Remove classType as it's not in TimetableEntry model
+                    document.getElementById('startTime').value = entry.startTime ? entry.startTime.substring(0, 5) : '';
+                    document.getElementById('endTime').value = entry.endTime ? entry.endTime.substring(0, 5) : '';
+                    document.getElementById('room').value = entry.room || '';
+                } catch (error) {
+                    console.error('Error loading entry:', error);
+                    window.scaUtils.showToast('Failed to load timetable entry', 'danger');
+                }
+            }
+
+            async function submitEntry(event) {
+                event.preventDefault();
+
+                const entryData = {
+                    offeringId: parseInt(document.getElementById('offeringId').value),
+                    dayOfWeek: parseInt(document.getElementById('dayOfWeek').value),
+                    startTime: document.getElementById('startTime').value + ':00', // Add seconds
+                    endTime: document.getElementById('endTime').value + ':00', // Add seconds
+                    room: document.getElementById('room').value || 'TBA'
+                };
+
+                if (!entryData.offeringId || !entryData.dayOfWeek ||
+                    !entryData.startTime || !entryData.endTime) {
+                    window.scaUtils.showToast('Please fill in all required fields', 'warning');
+                    return;
+                }
+
+                try {
+                    // Use correct endpoint: /api/timetable-entries
+                    const url = entryId ? `/api/timetable-entries/${entryId}` : '/api/timetable-entries';
+                    const method = entryId ? 'PUT' : 'POST';
+
+                    const response = await window.scaUtils.fetchWithCSRF(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(entryData)
+                    });
+
+                    if (response.ok) {
+                        window.scaUtils.showToast(`Timetable entry ${entryId ? 'updated' : 'added'} successfully!`, 'success');
+                        setTimeout(() => {
+                            window.location.href = '/admin/timetable';
+                        }, 1500);
+                    } else {
+                        const error = await response.text();
+                        window.scaUtils.showToast(`Failed to ${entryId ? 'update' : 'add'} entry: ${error}`, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Submit error:', error);
+                    window.scaUtils.showToast('An error occurred. Please try again.', 'danger');
+                }
+            }
+            /*]]>*/
+        </script>
+    </th:block>
+</body>
+
+</html>

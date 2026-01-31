@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications - Smart Campus Assistant</title>
+</head>
+
+<body>
+    <div th:replace="fragments/base :: layout(::main)">
+        <main>
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-1">Notifications</h1>
+                    <p class="text-muted">View all your notifications and announcements</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary me-2" onclick="loadNotifications()">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                    </button>
+                    <button class="btn btn-primary" onclick="markAllAsRead()">
+                        <i class="bi bi-check-all me-1"></i>Mark All as Read
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <ul class="nav nav-pills mb-4" id="notificationTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="all-notifications-tab" data-filter="all"
+                        onclick="filterNotifications('all')">
+                        <i class="bi bi-inbox me-1"></i>All <span class="badge bg-secondary ms-1" id="allCount">0</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="unread-tab" data-filter="unread"
+                        onclick="filterNotifications('unread')">
+                        <i class="bi bi-envelope me-1"></i>Unread <span class="badge bg-danger ms-1"
+                            id="unreadCount">0</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="read-tab" data-filter="read" onclick="filterNotifications('read')">
+                        <i class="bi bi-envelope-open me-1"></i>Read <span class="badge bg-success ms-1"
+                            id="readCount">0</span>
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Notifications List -->
+            <div id="notificationsList">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted mt-2">Loading notifications...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script th:inline="javascript">
+        const currentUserId = /*[[${currentUserId}]]*/ 1;
+        let allNotifications = [];
+        let currentFilter = 'all';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadNotifications();
+        });
+
+        async function loadNotifications() {
+            try {
+                const response = await fetchWithCSRF(`/api/notifications/user/${currentUserId}`);
+                allNotifications = await response.json();
+                updateCounts();
+                displayNotifications();
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                document.getElementById('notificationsList').innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-exclamation-triangle fs-1 text-danger"></i>
+                        <p class="text-danger mt-3">Error loading notifications</p>
+                        <button class="btn btn-primary" onclick="loadNotifications()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function updateCounts() {
+            const unread = allNotifications.filter(n => !n.readAt).length;
+            const read = allNotifications.filter(n => n.readAt).length;
+
+            document.getElementById('allCount').textContent = allNotifications.length;
+            document.getElementById('unreadCount').textContent = unread;
+            document.getElementById('readCount').textContent = read;
+        }
+
+        function filterNotifications(filter) {
+            currentFilter = filter;
+
+            // Update active tab
+            document.querySelectorAll('#notificationTabs button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(filter === 'all' ? 'all-notifications-tab' : filter + '-tab').classList.add('active');
+
+            displayNotifications();
+        }
+
+        function displayNotifications() {
+            const container = document.getElementById('notificationsList');
+
+            let filtered = allNotifications;
+            if (currentFilter === 'unread') {
+                filtered = allNotifications.filter(n => !n.readAt);
+            } else if (currentFilter === 'read') {
+                filtered = allNotifications.filter(n => n.readAt);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                        <h5 class="text-muted mt-3">No ${currentFilter === 'all' ? '' : currentFilter} notifications</h5>
+                        <p class="text-muted">You're all caught up!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="list-group">
+                    ${filtered.map(notification => `
+                        <div class="list-group-item list-group-item-action ${!notification.readAt ? 'list-group-item-primary' : ''} notification-item" 
+                             onclick="markAsRead(${notification.id})">
+                            <div class="d-flex w-100 justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center mb-2">
+                                        ${!notification.readAt ? '<i class="bi bi-circle-fill text-primary me-2" style="font-size: 8px;"></i>' : ''}
+                                        <h6 class="mb-0">${escapeHtml(notification.title)}</h6>
+                                    </div>
+                                    <p class="mb-2 text-muted">${escapeHtml(notification.body || '')}</p>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>${timeAgo(notification.createdAt)}
+                                        </small>
+                                        ${notification.deliveryChannel ? `<small class="text-muted"><i class="bi bi-${getChannelIcon(notification.deliveryChannel)} me-1"></i>${notification.deliveryChannel}</small>` : ''}
+                                        ${notification.readAt ? `<small class="text-success"><i class="bi bi-check-circle me-1"></i>Read</small>` : ''}
+                                    </div>
+                                </div>
+                                <div class="ms-3">
+                                    ${!notification.readAt
+                    ? `<button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); markAsRead(${notification.id})">
+                                               <i class="bi bi-check"></i>
+                                           </button>`
+                    : '<i class="bi bi-check-all text-success fs-5"></i>'
+                }
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        async function markAsRead(notificationId) {
+            try {
+                const response = await fetchWithCSRF(`/api/notifications/${notificationId}/read`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    const notification = allNotifications.find(n => n.id === notificationId);
+                    if (notification) {
+                        notification.readAt = new Date().toISOString();
+                    }
+                    updateCounts();
+                    displayNotifications();
+                }
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+        }
+
+        async function markAllAsRead() {
+            if (!confirm('Mark all notifications as read?')) return;
+
+            try {
+                const response = await fetchWithCSRF(`/api/notifications/user/${currentUserId}/read-all`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    showToast('All notifications marked as read', 'success');
+                    await loadNotifications();
+                } else {
+                    showToast('Failed to mark all as read', 'danger');
+                }
+            } catch (error) {
+                console.error('Error marking all as read:', error);
+                showToast('Failed to mark all as read', 'danger');
+            }
+        }
+
+        function getChannelIcon(channel) {
+            switch (channel) {
+                case 'EMAIL': return 'envelope';
+                case 'PUSH': return 'bell';
+                case 'IN_APP': return 'app-indicator';
+                default: return 'info-circle';
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function timeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+
+            let interval = seconds / 31536000;
+            if (interval > 1) return Math.floor(interval) + " years ago";
+            interval = seconds / 2592000;
+            if (interval > 1) return Math.floor(interval) + " months ago";
+            interval = seconds / 86400;
+            if (interval > 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600;
+            if (interval > 1) return Math.floor(interval) + " hours ago";
+            interval = seconds / 60;
+            if (interval > 1) return Math.floor(interval) + " minutes ago";
+            return Math.floor(seconds) + " seconds ago";
+        }
+    </script>
+
+    <style>
+        .notification-item {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .notification-item:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        .nav-pills .nav-link {
+            cursor: pointer;
+        }
+    </style>
+</body>
+
+</html>

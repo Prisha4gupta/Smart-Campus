@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})">
+
+<head>
+    <title th:text="${offering != null ? 'Edit' : 'Create'} + ' Offering - Admin'">Create Offering</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <!-- Page Header -->
+        <div class="mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/offerings">Course Offerings</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Create Offering</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-1">
+                <i class="bi bi-plus-circle me-2"></i>Create New Course Offering
+            </h1>
+            <p class="text-muted">Add a new course section for the semester</p>
+        </div>
+
+        <!-- Offering Form -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-bottom-0">
+                        <h5 class="mb-0 card-title fw-bold text-primary">
+                            <i class="bi bi-pencil-square me-2"></i>Offering Details
+                        </h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <form id="offeringForm" onsubmit="submitOffering(event)">
+                            <!-- Course Selection -->
+                            <div class="mb-3">
+                                <label for="courseSelect" class="form-label fw-bold">Course <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select" id="courseSelect" required>
+                                    <option value="">Select a course...</option>
+                                </select>
+                                <div class="form-text">Select the course to create a section for</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <!-- Semester -->
+                                    <label for="semesterSelect" class="form-label fw-bold">Semester <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select" id="semesterSelect" required>
+                                        <option value="">Select semester...</option>
+                                        <option value="Spring2025" selected>Spring 2025</option>
+                                        <option value="Fall2024">Fall 2024</option>
+                                        <option value="Summer2025">Summer 2025</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <!-- Section Code -->
+                                    <label for="sectionCode" class="form-label fw-bold">Section Code <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="sectionCode"
+                                        placeholder="e.g., A, B, L1" required maxlength="10">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-8 mb-3">
+                                    <!-- Faculty Selection -->
+                                    <label for="facultySelect" class="form-label fw-bold">Faculty <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select" id="facultySelect" required>
+                                        <option value="">Select faculty...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <!-- Capacity -->
+                                    <label for="capacity" class="form-label fw-bold">Capacity <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" id="capacity" value="60" min="1" max="200"
+                                        required>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                                <a href="/admin/offerings" class="btn btn-outline-secondary">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="bi bi-check-lg me-1"></i>Create Offering
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="col-lg-4">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-info-circle me-2"></i>Tips
+                        </h5>
+                        <ul class="small mb-0">
+                            <li>Section codes should be unique per course and semester</li>
+                            <li>Default capacity is 60 students</li>
+                            <li>You can add timetable entries after creating the offering</li>
+                            <li>Make sure the faculty is available for the selected semester</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card bg-warning-subtle mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Note
+                        </h5>
+                        <p class="small mb-0">
+                            After creating the offering, remember to add timetable entries so students can see when
+                            the class meets.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const offeringId = /*[[${offering?.id}]]*/ null;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Load dropdowns first, then data if editing
+                loadDropdowns().then(() => {
+                    if (offeringId) {
+                        loadOfferingData(offeringId);
+                    }
+                });
+            });
+
+            async function loadDropdowns() {
+                try {
+                    // Load courses
+                    const coursesRes = await window.scaUtils.fetchWithCSRF('/api/courses');
+                    const courses = await coursesRes.json();
+                    const courseSelect = document.getElementById('courseSelect');
+                    courses.forEach(c => {
+                        const option = document.createElement('option');
+                        option.value = c.id;
+                        option.textContent = `${c.code} - ${c.title}`;
+                        courseSelect.appendChild(option);
+                    });
+
+                    // Load faculty
+                    const facultyRes = await window.scaUtils.fetchWithCSRF('/api/faculty');
+                    const faculty = await facultyRes.json();
+                    const facultySelect = document.getElementById('facultySelect');
+                    faculty.forEach(f => {
+                        const option = document.createElement('option');
+                        option.value = f.id;
+                        option.textContent = `${f.firstName} ${f.lastName}`;
+                        facultySelect.appendChild(option);
+                    });
+
+                } catch (error) {
+                    console.error('Error loading dropdowns:', error);
+                    window.scaUtils.showToast('Failed to load form data', 'danger');
+                }
+            }
+
+            async function loadOfferingData(id) {
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF(`/api/offerings/${id}`);
+                    const offering = await response.json();
+
+                    document.getElementById('courseSelect').value = offering.course?.id || '';
+                    document.getElementById('sectionCode').value = offering.sectionCode || '';
+                    document.getElementById('semesterSelect').value = offering.semester || '';
+                    document.getElementById('facultySelect').value = offering.faculty?.id || '';
+                    document.getElementById('capacity').value = offering.capacity || '';
+                } catch (error) {
+                    console.error('Error loading offering:', error);
+                    window.scaUtils.showToast('Failed to load offering data', 'danger');
+                }
+            }
+
+            async function submitOffering(event) {
+                event.preventDefault();
+
+                const offeringData = {
+                    courseId: document.getElementById('courseSelect').value,
+                    sectionCode: document.getElementById('sectionCode').value,
+                    semester: document.getElementById('semesterSelect').value,
+                    facultyId: document.getElementById('facultySelect').value,
+                    capacity: parseInt(document.getElementById('capacity').value)
+                };
+
+                if (!offeringData.courseId || !offeringData.sectionCode || !offeringData.semester) {
+                    window.scaUtils.showToast('Please fill in all required fields', 'warning');
+                    return;
+                }
+
+                try {
+                    const url = offeringId ? `/api/offerings/${offeringId}` : '/api/offerings';
+                    const method = offeringId ? 'PUT' : 'POST';
+
+                    const response = await window.scaUtils.fetchWithCSRF(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(offeringData)
+                    });
+
+                    if (response.ok) {
+                        window.scaUtils.showToast(`Offering ${offeringId ? 'updated' : 'created'} successfully!`, 'success');
+                        setTimeout(() => {
+                            window.location.href = '/admin/offerings';
+                        }, 1500);
+                    } else {
+                        const error = await response.text();
+                        window.scaUtils.showToast(`Failed to save offering: ${error}`, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Submit error:', error);
+                    window.scaUtils.showToast('An error occurred. Please try again.', 'danger');
+                }
+            }
+            /*]]>*/
+        </script>
+    </th:block>
+</body>
+
+</html>

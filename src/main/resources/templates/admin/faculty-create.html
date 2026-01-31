@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})">
+
+<head>
+    <title th:text="${facultyId != null ? 'Edit' : 'Create'} + ' Faculty - Admin'">Create Faculty</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <!-- Page Header -->
+        <div class="mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/admin/faculty">Faculty</a></li>
+                    <li class="breadcrumb-item active" th:text="${facultyId != null ? 'Edit Faculty' : 'Add Faculty'}">
+                        Add Faculty</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-1" th:text="${facultyId != null ? 'Edit Faculty Member' : 'Add New Faculty Member'}">
+                Add New Faculty Member</h1>
+            <p class="text-muted">Fill in the faculty member details below</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-bottom-0">
+                        <h5 class="mb-0 card-title fw-bold text-primary"><i class="bi bi-person me-2"></i>Faculty
+                            Information</h5>
+                    </div>
+                    <div class="card-body pt-0">
+                        <form id="facultyForm">
+                            <input type="hidden" id="facultyId" th:value="${facultyId}">
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label fw-bold">First Name <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="firstName"
+                                        placeholder="Enter first name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label fw-bold">Last Name <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="lastName" placeholder="Enter last name"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-bold">Email <span
+                                        class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"><i
+                                            class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control border-start-0" id="email"
+                                        placeholder="faculty@iiitb.ac.in" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="department" class="form-label fw-bold">Department <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-select" id="department" required>
+                                    <option value="">Select department</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Mathematics">Mathematics</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Physics">Physics</option>
+                                    <option value="Chemistry">Chemistry</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label fw-bold">Phone</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="+91-9876543210">
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="card bg-light border-0 p-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="isActive" checked>
+                                        <label class="form-check-label fw-medium" for="isActive">
+                                            Active Status
+                                        </label>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">Inactive faculty won't appear in course
+                                        assignment lists</small>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                                <a href="/admin/faculty" class="btn btn-outline-secondary">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4" onclick="submitFaculty(event)">
+                                    <i class="bi bi-check-lg me-1"></i>
+                                    <span th:text="${facultyId != null ? 'Update Faculty' : 'Add Faculty'}">Add
+                                        Faculty</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card bg-light border-0 mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-3"><i
+                                class="bi bi-info-circle me-2 text-primary"></i>Guidelines</h5>
+
+                        <h6 class="fw-bold fs-6">Email Format</h6>
+                        <p class="small text-muted mb-3">Use institutional email address (e.g., @iiitb.ac.in)</p>
+
+                        <h6 class="fw-bold fs-6">Phone Format</h6>
+                        <p class="small text-muted mb-3">Include country code: +91-XXXXXXXXXX</p>
+
+                        <h6 class="fw-bold fs-6">Active Status</h6>
+                        <p class="small text-muted mb-0">Deactivating a faculty member will remove them from active
+                            assignments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            const facultyId = /*[[${facultyId}]]*/ null;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                if (facultyId) {
+                    loadFacultyData(facultyId);
+                }
+            });
+
+            async function loadFacultyData(id) {
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF(`/api/faculty/${id}`);
+                    const faculty = await response.json();
+
+                    document.getElementById('firstName').value = faculty.firstName || '';
+                    document.getElementById('lastName').value = faculty.lastName || '';
+                    document.getElementById('email').value = faculty.email || '';
+                    document.getElementById('department').value = faculty.department || '';
+                    document.getElementById('phone').value = faculty.phone || '';
+                    document.getElementById('isActive').checked = faculty.isActive !== false;
+                } catch (error) {
+                    console.error('Error loading faculty:', error);
+                    window.scaUtils.showToast('Failed to load faculty data', 'danger');
+                }
+            }
+
+            async function submitFaculty(event) {
+                event.preventDefault();
+
+                const facultyData = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    department: document.getElementById('department').value,
+                    phone: document.getElementById('phone').value,
+                    isActive: document.getElementById('isActive').checked
+                };
+
+                if (!facultyData.firstName || !facultyData.lastName || !facultyData.email || !facultyData.department) {
+                    window.scaUtils.showToast('Please fill in all required fields', 'warning');
+                    return;
+                }
+
+                try {
+                    const url = facultyId ? `/api/faculty/${facultyId}` : '/api/faculty';
+                    const method = facultyId ? 'PUT' : 'POST';
+
+                    const response = await window.scaUtils.fetchWithCSRF(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(facultyData)
+                    });
+
+                    if (response.ok) {
+                        window.scaUtils.showToast(`Faculty ${facultyId ? 'updated' : 'added'} successfully!`, 'success');
+                        setTimeout(() => {
+                            window.location.href = '/admin/faculty';
+                        }, 1500);
+                    } else {
+                        const error = await response.text();
+                        window.scaUtils.showToast(`Failed to ${facultyId ? 'update' : 'add'} faculty: ${error}`, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Submit error:', error);
+                    window.scaUtils.showToast('An error occurred. Please try again.', 'danger');
+                }
+            }
+            /*]]>*/
+        </script>
+    </th:block>
+</body>
+
+</html>

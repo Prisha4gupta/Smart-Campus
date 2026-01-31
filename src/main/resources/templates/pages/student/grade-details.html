@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="~{fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})}">
+
+<head>
+    <title>Assessment Details - Smart Campus</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <div class="content-wrapper p-4">
+            <!-- Back Button -->
+            <div class="mb-4">
+                <a th:href="@{/student/grades}" class="text-decoration-none text-muted hover-primary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Grades
+                </a>
+            </div>
+
+            <!-- Header Card -->
+            <div class="card mb-4 border-0 shadow-sm bg-primary text-white overflow-hidden position-relative">
+                <div class="position-absolute top-0 end-0 p-3 opacity-25">
+                    <i class="bi bi-award-fill" style="font-size: 5rem;"></i>
+                </div>
+                <div class="card-body p-4 position-relative z-1">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-1 fw-bold" th:text="${quiz.title}">Quiz Title</h2>
+                            <p class="mb-0 opacity-75">Detailed assessment breakdown and feedback</p>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="d-inline-block bg-white bg-opacity-25 rounded p-3 text-center">
+                                <div class="small opacity-75 text-uppercase">Score</div>
+                                <div class="display-6 fw-bold">
+                                    <span th:text="${attempt.obtainedMarks}">0</span>
+                                    <span class="fs-4 opacity-75">/ <span th:text="${quiz.maxMarks}">100</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Breakdown -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-list-check me-2 text-primary"></i>Question Breakdown</h5>
+                        <span class="badge"
+                            th:classappend="${attempt.status == 'COMPLETED' ? 'bg-success' : 'bg-warning text-dark'}"
+                            th:text="${attempt.status}">COMPLETED</span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4" style="width: 50px;">#</th>
+                                    <th>Question</th>
+                                    <th style="width: 100px;">Max</th>
+                                    <th style="width: 100px;">Obtained</th>
+                                    <th>Feedback</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="q : ${questions}">
+                                    <td class="ps-4 fw-bold text-muted" th:text="${q.questionNumber}">1</td>
+                                    <td>
+                                        <div th:text="${q.text}">Question text goes here</div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border" th:text="${q.maxMarks}">5</span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold"
+                                            th:classappend="${q.obtainedMarks == q.maxMarks ? 'text-success' : (q.obtainedMarks == 0 ? 'text-danger' : 'text-warning')}"
+                                            th:text="${q.obtainedMarks != null ? q.obtainedMarks : '-'}">-</span>
+                                    </td>
+                                    <td>
+                                        <div th:if="${q.evaluatorComment != null}"
+                                            class="d-flex align-items-start text-muted small">
+                                            <i class="bi bi-chat-left-text me-2 mt-1"></i>
+                                            <span th:text="${q.evaluatorComment}">Feedback content</span>
+                                        </div>
+                                        <span th:unless="${q.evaluatorComment != null}"
+                                            class="text-muted small fst-italic">No feedback</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer bg-light p-3">
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="btn btn-outline-secondary btn-sm" disabled>
+                            <i class="bi bi-flag me-1"></i>Report Issue
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm" disabled>
+                            <i class="bi bi-arrow-repeat me-1"></i>Request Regrade
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script>
+            // Page-specific scripts if needed
+        </script>
+    </th:block>
+</body>
+
+</html>

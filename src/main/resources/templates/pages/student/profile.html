@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="~{fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})}">
+
+<head>
+    <title>My Profile - Smart Campus</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <div class="content-wrapper p-4">
+            <!-- Page Header -->
+            <div class="mb-4">
+                <h2 class="mb-1">My Profile</h2>
+                <p class="text-muted">View and manage your student information</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Profile Card -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body text-center py-5">
+                            <div class="mb-3">
+                                <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center"
+                                    style="width: 100px; height: 100px;">
+                                    <i class="bi bi-person-fill text-primary" style="font-size: 3rem;"></i>
+                                </div>
+                            </div>
+                            <h4 class="mb-1" th:text="${user.username}">Student Name</h4>
+                            <p class="text-muted mb-2" th:text="${'ID: STU-' + user.id}">STU-001</p>
+                            <span class="badge bg-primary rounded-pill px-3" th:text="${user.role}">STUDENT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Card -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h5 class="mb-0 fw-bold"><i class="bi bi-info-circle me-2 text-primary"></i>Account Details
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small mb-1">Username</label>
+                                    <div class="fw-medium" th:text="${user.username}">username</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small mb-1">Role</label>
+                                    <div class="fw-medium" th:text="${user.role}">STUDENT</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small mb-1">Student ID</label>
+                                    <div class="fw-medium" th:text="${'STU-' + user.id}">STU-001</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enrolled Courses -->
+                    <div class="card shadow-sm border-0 mt-4">
+                        <div class="card-header bg-white border-0 py-3">
+                            <h5 class="mb-0 fw-bold"><i class="bi bi-book me-2 text-primary"></i>Enrolled Courses</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                <div th:if="${enrollments == null || #lists.isEmpty(enrollments)}"
+                                    class="list-group-item text-center text-muted py-4">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No enrollments found
+                                </div>
+                                <div th:each="e : ${enrollments}"
+                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-medium" th:text="${e.offering.course.title}">Course Title</div>
+                                        <small class="text-muted" th:text="${e.offering.course.code}">CS101</small>
+                                    </div>
+                                    <span class="badge rounded-pill"
+                                        th:classappend="${e.status.name() == 'ENROLLED' ? 'bg-success' : 'bg-secondary'}"
+                                        th:text="${e.status}">ENROLLED</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script>
+            // Page-specific scripts if needed
+        </script>
+    </th:block>
+</body>
+
+</html>

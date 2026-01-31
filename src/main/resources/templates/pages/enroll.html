@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="~{fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})}">
+
+<head>
+    <title>Course Enrollment - Smart Campus</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <div class="content-wrapper p-4">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1">Course Enrollment</h2>
+                    <p class="text-muted">Browse and enroll in available course offerings</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary" onclick="loadOfferings()">
+                        <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Semester</label>
+                            <select class="form-select" id="semesterFilter" onchange="filterOfferings()">
+                                <option value="">All Semesters</option>
+                                <option value="Spring2025">Spring 2025</option>
+                                <option value="Fall2024">Fall 2024</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Search Course</label>
+                            <input type="text" class="form-control" id="courseSearch" placeholder="Code or title..."
+                                onkeyup="filterOfferings()">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small text-uppercase fw-bold">Availability</label>
+                            <select class="form-select" id="availabilityFilter" onchange="filterOfferings()">
+                                <option value="">All Statuses</option>
+                                <option value="available">Available</option>
+                                <option value="full">Full</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Enrollments -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-check-circle me-2 text-success"></i>My Enrollments</h5>
+                </div>
+                <div class="card-body p-0" id="myEnrollments">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available Offerings -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-journal-code me-2 text-primary"></i>Available Course Offerings</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div id="offeringsList">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="text-muted mt-2">Loading course offerings...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script th:inline="javascript">
+            const currentUserId = /*[[${currentUserId}]]*/ 1;
+            let allOfferings = [];
+            let myEnrollmentIds = new Set();
+
+            document.addEventListener('DOMContentLoaded', function () {
+                loadEnrollments();
+                loadOfferings();
+            });
+
+            async function loadEnrollments() {
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF(`/api/enrollments/student/${currentUserId}`);
+                    const enrollments = await response.json();
+                    myEnrollmentIds = new Set(enrollments.map(e => e.offering?.id).filter(id => id));
+                    displayMyEnrollments(enrollments);
+                } catch (error) {
+                    console.error('Error loading enrollments:', error);
+                    document.getElementById('myEnrollments').innerHTML = '<p class="text-muted text-center py-4 mb-0">No enrollments yet</p>';
+                }
+            }
+
+            async function loadOfferings() {
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF('/api/offerings');
+                    allOfferings = await response.json();
+                    displayOfferings(allOfferings);
+                } catch (error) {
+                    console.error('Error loading offerings:', error);
+                    document.getElementById('offeringsList').innerHTML = '<div class="text-center py-5 text-danger">Error loading offerings</div>';
+                }
+            }
+
+            function displayMyEnrollments(enrollments) {
+                const container = document.getElementById('myEnrollments');
+                if (!enrollments || enrollments.length === 0) {
+                    container.innerHTML = '<p class="text-muted text-center py-4 mb-0">No enrollments yet</p>';
+                    return;
+                }
+                container.innerHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light"><tr><th>Course</th><th>Section</th><th>Status</th><th class="text-end">Action</th></tr></thead>
+                            <tbody>
+                                ${enrollments.map(e => `
+                                    <tr>
+                                        <td><strong>${e.offering?.course?.code || 'N/A'}</strong><br><small class="text-muted">${e.offering?.course?.title || ''}</small></td>
+                                        <td>${e.offering?.sectionCode || 'N/A'}</td>
+                                        <td><span class="badge bg-${e.status === 'ENROLLED' ? 'success' : 'secondary'}">${e.status}</span></td>
+                                        <td class="text-end"><button class="btn btn-sm btn-outline-danger" onclick="dropEnrollment(${e.id}, ${e.offering?.id})">Drop</button></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            function displayOfferings(offerings) {
+                const container = document.getElementById('offeringsList');
+                if (!offerings || offerings.length === 0) {
+                    container.innerHTML = '<div class="text-center py-5 text-muted">No offerings found</div>';
+                    return;
+                }
+                container.innerHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light"><tr><th>Course</th><th>Section</th><th>Faculty</th><th>Seats</th><th class="text-end">Action</th></tr></thead>
+                            <tbody>
+                                ${offerings.map(o => {
+                    const isEnrolled = myEnrollmentIds.has(o.id);
+                    const isFull = (o.enrolledCount || 0) >= (o.capacity || 60);
+                    return `
+                                    <tr>
+                                        <td><strong>${o.course?.code || 'N/A'}</strong><br><small class="text-muted">${o.course?.title || ''}</small></td>
+                                        <td>${o.sectionCode || 'N/A'}</td>
+                                        <td>${o.faculty ? o.faculty.firstName + ' ' + o.faculty.lastName : 'TBA'}</td>
+                                        <td>${o.enrolledCount || 0}/${o.capacity || 60}</td>
+                                        <td class="text-end">
+                                            ${isEnrolled ? '<button class="btn btn-sm btn-success" disabled>Enrolled</button>' :
+                            isFull ? '<button class="btn btn-sm btn-secondary" disabled>Full</button>' :
+                                `<button class="btn btn-sm btn-primary" onclick="enrollInOffering(${o.id}, this)">Enroll</button>`}
+                                        </td>
+                                    </tr>`;
+                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+
+            async function enrollInOffering(offeringId, btn) {
+                if (!confirm('Enroll in this course?')) return;
+                btn.disabled = true;
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF('/api/enrollments', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: currentUserId, offeringId: offeringId, status: 'ENROLLED' })
+                    });
+                    if (response.ok) {
+                        window.scaUtils.showToast('Enrolled!', 'success');
+                        loadEnrollments(); loadOfferings();
+                    } else { window.scaUtils.showToast('Failed', 'error'); btn.disabled = false; }
+                } catch (e) { console.error(e); btn.disabled = false; }
+            }
+
+            async function dropEnrollment(enrollmentId, offeringId) {
+                if (!confirm('Drop this course?')) return;
+                try {
+                    const response = await window.scaUtils.fetchWithCSRF(`/api/enrollments/${enrollmentId}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        window.scaUtils.showToast('Dropped', 'success');
+                        myEnrollmentIds.delete(offeringId);
+                        loadEnrollments(); loadOfferings();
+                    }
+                } catch (e) { console.error(e); }
+            }
+
+            function filterOfferings() {
+                const semester = document.getElementById('semesterFilter').value.toLowerCase();
+                const search = document.getElementById('courseSearch').value.toLowerCase();
+                const avail = document.getElementById('availabilityFilter').value;
+                const filtered = allOfferings.filter(o => {
+                    const matchSem = !semester || (o.semester || '').toLowerCase().includes(semester);
+                    const matchSearch = !search || (o.course?.code || '').toLowerCase().includes(search) || (o.course?.title || '').toLowerCase().includes(search);
+                    let matchAvail = true;
+                    if (avail === 'available') matchAvail = (o.enrolledCount || 0) < (o.capacity || 60);
+                    if (avail === 'full') matchAvail = (o.enrolledCount || 0) >= (o.capacity || 60);
+                    return matchSem && matchSearch && matchAvail;
+                });
+                displayOfferings(filtered);
+            }
+        </script>
+    </th:block>
+</body>
+
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})">
+
+<head>
+    <title>Manage Faculty - Admin</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">
+                    <i class="bi bi-people me-2"></i>Faculty Management
+                </h1>
+                <p class="text-muted">Manage faculty members and assignments</p>
+            </div>
+            <div>
+                <a href="/admin/faculty/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>Add New Faculty
+                </a>
+            </div>
+        </div>
+
+        <!-- Faculty List and Filters -->
+        <div class="card">
+            <div class="card-header bg-white py-3">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control border-start-0" id="searchFaculty"
+                                placeholder="Search by name or department...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="deptFilter">
+                            <option value="">All Departments</option>
+                            <option value="CS">Computer Science</option>
+                            <option value="ENG">Engineering</option>
+                            <option value="SCI">Science</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-primary w-100" onclick="loadFaculty()">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="facultyList">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-muted mt-2">Loading faculty directory...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script th:src="@{/js/faculty.js}"></script>
+    </th:block>
+</body>
+
+</html>

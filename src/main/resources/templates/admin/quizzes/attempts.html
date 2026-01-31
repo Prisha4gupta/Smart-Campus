@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})}">
+
+<head>
+    <title>Quiz Attempts - Smart Campus</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <div class="content-wrapper p-4">
+            <div class="mb-4">
+                <a th:href="@{/admin/quizzes}" class="text-decoration-none text-muted">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Quizzes
+                </a>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1" th:text="'Attempts: ' + ${quiz.title}">Quiz Attempts</h2>
+                    <p class="text-muted mb-0">
+                        <span th:text="${quiz.offeringCode + ' - ' + quiz.offeringTitle}">CS101</span>
+                        <span class="mx-2">•</span>
+                        <span>Max Marks: <strong th:text="${quiz.maxMarks}">100</strong></span>
+                    </p>
+                </div>
+                <a th:href="@{/admin/quizzes/{id}/questions(id=${quiz.id})}" class="btn btn-outline-primary">
+                    <i class="bi bi-list-check me-1"></i>Manage Questions
+                </a>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Student</th>
+                                    <th>Obtained Marks</th>
+                                    <th>Percentage</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(attempts)}">
+                                    <td colspan="4" class="text-center py-5 text-muted">
+                                        <i class="bi bi-people fs-1 d-block mb-3"></i>
+                                        No attempts yet for this quiz.
+                                    </td>
+                                </tr>
+                                <tr th:each="a : ${attempts}">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center me-3"
+                                                style="width: 40px; height: 40px;">
+                                                <i class="bi bi-person text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-medium" th:text="${a.username}">student1</div>
+                                                <small class="text-muted" th:text="${'ID: ' + a.userId}">ID: 1</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold"
+                                            th:text="${a.obtainedMarks != null ? a.obtainedMarks : '-'}">85</span>
+                                        <span class="text-muted" th:text="${' / ' + quiz.maxMarks}">/ 100</span>
+                                    </td>
+                                    <td>
+                                        <th:block th:if="${a.obtainedMarks != null && quiz.maxMarks > 0}">
+                                            <div class="progress" style="height: 8px; width: 100px;">
+                                                <div class="progress-bar" role="progressbar"
+                                                    th:style="'width: ' + ${(a.obtainedMarks * 100) / quiz.maxMarks} + '%'"
+                                                    th:classappend="${(a.obtainedMarks * 100 / quiz.maxMarks) >= 40 ? 'bg-success' : 'bg-danger'}">
+                                                </div>
+                                            </div>
+                                            <small class="text-muted"
+                                                th:text="${#numbers.formatDecimal((a.obtainedMarks * 100.0) / quiz.maxMarks, 1, 1) + '%'}">85%</small>
+                                        </th:block>
+                                        <span th:unless="${a.obtainedMarks != null && quiz.maxMarks > 0}"
+                                            class="text-muted">-</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                            th:classappend="${a.status == 'COMPLETED' ? 'bg-success' : (a.status == 'IN_PROGRESS' ? 'bg-warning text-dark' : 'bg-secondary')}"
+                                            th:text="${a.status}">COMPLETED</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4 border-0 bg-light">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="h4 mb-0" th:text="${#lists.size(attempts)}">0</div>
+                            <small class="text-muted">Total Attempts</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="h4 mb-0" th:text="${quiz.questionCount}">0</div>
+                            <small class="text-muted">Questions</small>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="h4 mb-0" th:text="${quiz.maxMarks}">100</div>
+                            <small class="text-muted">Max Marks</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script></script>
+    </th:block>
+</body>
+
+</html>

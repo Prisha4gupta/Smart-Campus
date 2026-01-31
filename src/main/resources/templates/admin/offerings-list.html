@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})">
+
+<head>
+    <title>Manage Course Offerings - Admin</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">
+                    <i class="bi bi-journal-code me-2"></i>Course Offerings Management
+                </h1>
+                <p class="text-muted">Manage course sections and offerings</p>
+            </div>
+            <div>
+                <a href="/admin/offerings/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>Create New Offering
+                </a>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Semester</label>
+                        <select class="form-select" id="semesterFilter" onchange="filterOfferings()">
+                            <option value="">All Semesters</option>
+                            <option value="Spring2025" selected>Spring 2025</option>
+                            <option value="Fall2024">Fall 2024</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Search</label>
+                        <input type="text" class="form-control" id="searchFilter"
+                            placeholder="Search by course code or title..." onkeyup="filterOfferings()">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">&nbsp;</label>
+                        <button class="btn btn-outline-primary w-100" onclick="loadOfferings()">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Offerings Table -->
+        <div class="card">
+            <div class="card-body">
+                <div id="offeringsTable">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-muted mt-2">Loading course offerings...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script th:src="@{/js/offerings.js}"></script>
+    </th:block>
+</body>
+
+</html>

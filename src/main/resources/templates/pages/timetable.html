@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    th:replace="~{fragments/base :: layout(~{::.content-view}, ~{::#page-scripts})}">
+
+<head>
+    <title>My Timetable - Smart Campus</title>
+</head>
+
+<body>
+    <div class="content-view">
+        <div class="content-wrapper p-4">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1">My Weekly Timetable</h2>
+                    <p class="text-muted mb-0">Your personalized class schedule</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline-primary" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i>Print
+                    </button>
+                </div>
+            </div>
+
+            <!-- Timetable Grid -->
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <div class="timetable-grid">
+                            <!-- Header Row -->
+                            <div class="timetable-cell header"></div>
+                            <div class="timetable-cell header">Monday</div>
+                            <div class="timetable-cell header">Tuesday</div>
+                            <div class="timetable-cell header">Wednesday</div>
+                            <div class="timetable-cell header">Thursday</div>
+                            <div class="timetable-cell header">Friday</div>
+                            <div class="timetable-cell header">Saturday</div>
+                            <div class="timetable-cell header">Sunday</div>
+
+                            <!-- Time Slots 9AM-4PM -->
+                            <div class="timetable-cell time-slot">9:00 AM</div>
+                            <div class="timetable-cell" id="mon-9"></div>
+                            <div class="timetable-cell" id="tue-9"></div>
+                            <div class="timetable-cell" id="wed-9"></div>
+                            <div class="timetable-cell" id="thu-9"></div>
+                            <div class="timetable-cell" id="fri-9"></div>
+                            <div class="timetable-cell" id="sat-9"></div>
+                            <div class="timetable-cell" id="sun-9"></div>
+
+                            <div class="timetable-cell time-slot">10:00 AM</div>
+                            <div class="timetable-cell" id="mon-10"></div>
+                            <div class="timetable-cell" id="tue-10"></div>
+                            <div class="timetable-cell" id="wed-10"></div>
+                            <div class="timetable-cell" id="thu-10"></div>
+                            <div class="timetable-cell" id="fri-10"></div>
+                            <div class="timetable-cell" id="sat-10"></div>
+                            <div class="timetable-cell" id="sun-10"></div>
+
+                            <div class="timetable-cell time-slot">11:00 AM</div>
+                            <div class="timetable-cell" id="mon-11"></div>
+                            <div class="timetable-cell" id="tue-11"></div>
+                            <div class="timetable-cell" id="wed-11"></div>
+                            <div class="timetable-cell" id="thu-11"></div>
+                            <div class="timetable-cell" id="fri-11"></div>
+                            <div class="timetable-cell" id="sat-11"></div>
+                            <div class="timetable-cell" id="sun-11"></div>
+
+                            <div class="timetable-cell time-slot">12:00 PM</div>
+                            <div class="timetable-cell" id="mon-12"></div>
+                            <div class="timetable-cell" id="tue-12"></div>
+                            <div class="timetable-cell" id="wed-12"></div>
+                            <div class="timetable-cell" id="thu-12"></div>
+                            <div class="timetable-cell" id="fri-12"></div>
+                            <div class="timetable-cell" id="sat-12"></div>
+                            <div class="timetable-cell" id="sun-12"></div>
+
+                            <div class="timetable-cell time-slot">1:00 PM</div>
+                            <div class="timetable-cell" id="mon-13"></div>
+                            <div class="timetable-cell" id="tue-13"></div>
+                            <div class="timetable-cell" id="wed-13"></div>
+                            <div class="timetable-cell" id="thu-13"></div>
+                            <div class="timetable-cell" id="fri-13"></div>
+                            <div class="timetable-cell" id="sat-13"></div>
+                            <div class="timetable-cell" id="sun-13"></div>
+
+                            <div class="timetable-cell time-slot">2:00 PM</div>
+                            <div class="timetable-cell" id="mon-14"></div>
+                            <div class="timetable-cell" id="tue-14"></div>
+                            <div class="timetable-cell" id="wed-14"></div>
+                            <div class="timetable-cell" id="thu-14"></div>
+                            <div class="timetable-cell" id="fri-14"></div>
+                            <div class="timetable-cell" id="sat-14"></div>
+                            <div class="timetable-cell" id="sun-14"></div>
+
+                            <div class="timetable-cell time-slot">3:00 PM</div>
+                            <div class="timetable-cell" id="mon-15"></div>
+                            <div class="timetable-cell" id="tue-15"></div>
+                            <div class="timetable-cell" id="wed-15"></div>
+                            <div class="timetable-cell" id="thu-15"></div>
+                            <div class="timetable-cell" id="fri-15"></div>
+                            <div class="timetable-cell" id="sat-15"></div>
+                            <div class="timetable-cell" id="sun-15"></div>
+
+                            <div class="timetable-cell time-slot">4:00 PM</div>
+                            <div class="timetable-cell" id="mon-16"></div>
+                            <div class="timetable-cell" id="tue-16"></div>
+                            <div class="timetable-cell" id="wed-16"></div>
+                            <div class="timetable-cell" id="thu-16"></div>
+                            <div class="timetable-cell" id="fri-16"></div>
+                            <div class="timetable-cell" id="sat-16"></div>
+                            <div class="timetable-cell" id="sun-16"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="d-flex flex-wrap gap-4 text-muted small">
+                        <div class="d-flex align-items-center">
+                            <div class="class-block" style="width: 20px; height: 20px; padding: 0;"></div>
+                            <span class="ms-2">Scheduled Class</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div
+                                style="width: 20px; height: 20px; background-color: var(--bg-body); border: 1px solid var(--border-color);">
+                            </div>
+                            <span class="ms-2">Free Slot</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" id="currentUserId" th:value="${currentUserId}" />
+        </div>
+    </div>
+
+    <th:block id="page-scripts">
+        <script>
+            document.addEventListener('DOMContentLoaded', async function () {
+                const userId = document.getElementById('currentUserId').value;
+                if (!userId) return;
+
+                try {
+                    const response = await fetch(`/api/timetable-entries/student/${userId}`);
+                    const timetable = await response.json();
+                    populateTimetable(timetable);
+                } catch (error) {
+                    console.error('Failed to load timetable:', error);
+                }
+            });
+
+            function populateTimetable(entries) {
+                const dayMap = { 1: 'sun', 2: 'mon', 3: 'tue', 4: 'wed', 5: 'thu', 6: 'fri', 7: 'sat' };
+
+                entries.forEach(entry => {
+                    const dayCode = dayMap[entry.dayOfWeek];
+                    const startHour = parseInt(entry.startTime.split(':')[0]);
+                    const cellId = `${dayCode}-${startHour}`;
+                    const cell = document.getElementById(cellId);
+
+                    if (cell) {
+                        cell.innerHTML = `
+                            <div class="class-block">
+                                <strong class="d-block mb-1 text-truncate">${entry.courseCode || 'N/A'}</strong>
+                                <div class="small text-truncate text-primary" style="font-size: 0.75em;">${entry.room}</div>
+                            </div>
+                        `;
+                        cell.title = `${entry.courseCode} - ${entry.startTime} to ${entry.endTime} (${entry.room})`;
+                    }
+                });
+            }
+        </script>
+    </th:block>
+</body>
+
+</html>
