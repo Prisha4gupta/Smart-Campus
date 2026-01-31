@@ -229,15 +229,3 @@ Files are stored in the `uploads/` directory (configurable via `file.upload-dir`
 | Weather API errors | Get API key from openweathermap.org |
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-<div align="center">
-
-**Built with ❤️ using Spring Boot**
-
-</div>
