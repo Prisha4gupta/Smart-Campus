@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
  * Course Entity - Represents canonical course information
  * Maps to the 'courses' table in the database
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Entity

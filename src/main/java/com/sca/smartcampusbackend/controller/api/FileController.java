@@ -22,7 +22,6 @@ import java.util.Map;
 /**
  * REST Controller for File Upload/Download operations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestController

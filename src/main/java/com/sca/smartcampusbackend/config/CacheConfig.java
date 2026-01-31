@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
  * Cache Configuration
  * Configures ConcurrentMapCacheManager for in-memory caching
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Configuration

@@ -19,7 +19,6 @@ import java.util.List;
  * This is the NEW enrollment-based timetable system that replaces the old
  * student_id-based timetable table.
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestController

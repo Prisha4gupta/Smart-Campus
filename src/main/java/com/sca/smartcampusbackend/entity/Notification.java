@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
  * Supports idempotent notification generation via unique constraint on (user_id, event_id).
  * Batch insert capable - designed for 500+ row bulk operations.
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Entity

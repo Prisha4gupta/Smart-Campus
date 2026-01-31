@@ -16,7 +16,6 @@ import java.util.List;
  * REST Controller for Course Offering operations
  * Provides endpoints for managing course sections and electives
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestController

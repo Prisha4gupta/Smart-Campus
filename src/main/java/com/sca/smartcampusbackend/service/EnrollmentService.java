@@ -9,7 +9,6 @@ import java.util.List;
  * Service interface for Student Enrollment operations
  * Handles enrollment logic including capacity checks and waitlist management
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 public interface EnrollmentService {

@@ -22,7 +22,6 @@ import java.util.UUID;
  * File Storage Service for handling file uploads
  * Supports storing and retrieving files from local filesystem
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

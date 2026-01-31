@@ -16,7 +16,6 @@ import java.util.List;
  * REST Controller for Student Enrollment operations
  * Provides endpoints for managing student course registrations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestController

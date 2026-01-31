@@ -15,7 +15,6 @@ import java.util.Date;
 /**
  * JWT Utility class for token generation and validation
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Component

@@ -21,7 +21,6 @@ import java.util.Map;
  * REST Controller for External Integrations
  * Provides endpoints for Weather API and Email notifications
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestController

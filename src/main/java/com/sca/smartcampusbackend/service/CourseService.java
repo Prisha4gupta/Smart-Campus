@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * Service interface for Course operations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 public interface CourseService {

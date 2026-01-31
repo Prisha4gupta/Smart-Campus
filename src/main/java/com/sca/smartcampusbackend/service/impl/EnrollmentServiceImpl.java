@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
  * Implementation of EnrollmentService
  * Handles student enrollment logic with capacity checks and waitlist management
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

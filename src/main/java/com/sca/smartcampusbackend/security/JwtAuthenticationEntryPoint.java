@@ -20,7 +20,6 @@ import java.util.Map;
  * JWT Authentication Entry Point
  * Handles unauthorized access attempts and returns JSON error response
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Component

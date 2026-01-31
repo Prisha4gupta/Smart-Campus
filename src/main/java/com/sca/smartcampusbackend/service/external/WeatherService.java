@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
  * Weather API Service for external integration
  * Fetches weather data from OpenWeatherMap API
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

@@ -30,7 +30,6 @@ import java.util.List;
  * Controller for rendering Thymeleaf templates
  * Maps URLs to template pages (server-side rendering)
  * 
- * @author Team Stack Underflow
  * @version 1.0.0
  */
 @Controller

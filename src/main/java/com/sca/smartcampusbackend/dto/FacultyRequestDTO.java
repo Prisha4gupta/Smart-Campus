@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
  * DTO for creating/updating Faculty
  * Used in POST/PUT requests to faculty endpoints
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

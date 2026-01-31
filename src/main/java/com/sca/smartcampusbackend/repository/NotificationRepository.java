@@ -15,7 +15,6 @@ import java.util.List;
  * Provides database access methods for notification operations
  * Supports batch operations for efficient notification generation
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Repository

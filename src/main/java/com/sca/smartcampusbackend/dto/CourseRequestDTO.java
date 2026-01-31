@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
  * DTO for creating/updating Courses
  * Used in POST/PUT requests to course endpoints
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

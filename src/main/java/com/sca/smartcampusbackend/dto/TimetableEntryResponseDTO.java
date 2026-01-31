@@ -9,7 +9,6 @@ import java.time.LocalTime;
  * DTO for Timetable Entry responses
  * Used in GET requests to return timetable data
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

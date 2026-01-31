@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
  * Implementation of CourseOfferingService
  * Handles all business logic for course offering operations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

@@ -11,7 +11,6 @@ import java.util.Optional;
  * Repository interface for Faculty entity
  * Provides database access methods for faculty operations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Repository

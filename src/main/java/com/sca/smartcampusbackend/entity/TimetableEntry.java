@@ -11,7 +11,6 @@ import java.time.LocalTime;
  * Each course offering can have multiple meeting times throughout the week.
  * Students see their personalized timetable by joining this with their enrollments.
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Entity

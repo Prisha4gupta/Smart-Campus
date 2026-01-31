@@ -13,7 +13,6 @@ import java.util.List;
  * Structured API error response DTO
  * Used for consistent error responses across all endpoints
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

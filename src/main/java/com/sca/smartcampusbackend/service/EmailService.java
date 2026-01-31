@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
  * Email Service for sending notifications
  * Supports both simple text emails and HTML emails
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

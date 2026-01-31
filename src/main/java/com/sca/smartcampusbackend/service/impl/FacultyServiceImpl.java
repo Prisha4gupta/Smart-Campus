@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
  * Implementation of FacultyService
  * Handles all business logic for faculty operations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

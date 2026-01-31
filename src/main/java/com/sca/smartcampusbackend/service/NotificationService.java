@@ -8,7 +8,6 @@ import java.util.List;
  * Service interface for Notification operations
  * Supports idempotent batch notification generation
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 public interface NotificationService {

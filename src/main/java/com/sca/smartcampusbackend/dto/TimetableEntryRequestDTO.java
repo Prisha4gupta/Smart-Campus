@@ -10,7 +10,6 @@ import java.time.LocalTime;
  * DTO for creating/updating Timetable Entries
  * Used in POST/PUT requests to timetable entry endpoints
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

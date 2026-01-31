@@ -13,7 +13,6 @@ import java.util.List;
  * Repository interface for Event entity
  * Provides database access methods for event operations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Repository

@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
  * This is the KEY TABLE for personalized timetables - all timetable data
  * is derived from which offerings a student is enrolled in.
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Entity

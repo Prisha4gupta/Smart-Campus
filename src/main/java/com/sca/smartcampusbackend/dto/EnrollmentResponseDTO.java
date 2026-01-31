@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
  * DTO for Student Enrollment responses
  * Used in GET requests to return enrollment data
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

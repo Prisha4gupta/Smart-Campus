@@ -16,7 +16,6 @@ import java.util.List;
  * REST Controller for Faculty operations
  * Provides endpoints for managing faculty directory
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestController

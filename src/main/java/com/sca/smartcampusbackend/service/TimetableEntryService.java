@@ -9,7 +9,6 @@ import java.util.List;
  * Service interface for TimetableEntry operations
  * Handles timetable resolution based on student enrollments
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 public interface TimetableEntryService {

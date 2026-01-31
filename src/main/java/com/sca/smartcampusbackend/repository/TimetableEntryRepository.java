@@ -12,7 +12,6 @@ import java.util.List;
  * Repository interface for TimetableEntry entity
  * Provides database access methods for timetable entry operations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Repository

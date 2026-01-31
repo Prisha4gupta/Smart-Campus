@@ -23,7 +23,6 @@ import java.io.IOException;
  * JWT Authentication Filter
  * Intercepts requests to validate JWT tokens and set authentication context
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Component

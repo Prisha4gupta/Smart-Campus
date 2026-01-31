@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
  * DTO for Course Offering responses
  * Used in GET requests to return offering data with nested course/faculty info
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

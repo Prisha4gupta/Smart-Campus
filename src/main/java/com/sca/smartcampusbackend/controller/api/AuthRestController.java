@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
  * REST Controller for JWT Authentication
  * Provides endpoints for user authentication and token generation
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestController

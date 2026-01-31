@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
  * Implementation of TimetableEntryService
  * Resolves student timetables from enrollments + timetable entries
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

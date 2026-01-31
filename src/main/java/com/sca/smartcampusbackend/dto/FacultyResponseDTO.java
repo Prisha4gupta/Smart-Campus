@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
  * DTO for Faculty responses
  * Used in GET requests to return faculty data
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

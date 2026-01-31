@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
  * Faculty Entity - Represents instructors/professors
  * Maps to the 'faculty' table in the database
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Entity

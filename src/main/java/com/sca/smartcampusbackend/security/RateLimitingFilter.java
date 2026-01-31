@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * Rate Limiting Filter using Bucket4j
  * Limits API requests per IP address to prevent abuse
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Component

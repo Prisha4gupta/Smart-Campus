@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
  * Handles all business logic for course operations
  * Includes caching for frequently accessed data
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

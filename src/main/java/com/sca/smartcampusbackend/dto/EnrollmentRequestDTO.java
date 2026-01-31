@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
  * DTO for creating Student Enrollments
  * Used in POST requests to enrollment endpoints
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

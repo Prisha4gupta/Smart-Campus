@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
  * DTO for creating/updating Events
  * Used in POST/PUT requests to event endpoints
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

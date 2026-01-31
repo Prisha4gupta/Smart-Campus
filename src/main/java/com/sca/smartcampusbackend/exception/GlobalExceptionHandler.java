@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
  * Handles all exceptions and returns structured JSON responses
  * Compliant with Section 7 of PRD guidelines
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestControllerAdvice

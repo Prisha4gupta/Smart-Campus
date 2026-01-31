@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
  * DTO for Notification responses
  * Used in GET requests to return notification data
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

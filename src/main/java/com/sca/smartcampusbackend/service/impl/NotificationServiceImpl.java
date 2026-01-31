@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
  * Implementation of NotificationService
  * Supports idempotent batch notification generation (500 rows per batch)
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

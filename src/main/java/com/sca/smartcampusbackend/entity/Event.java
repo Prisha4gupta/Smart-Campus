@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
  * Future versions will support targeted events via groups and event_targets tables.
  * MVP: Simple public/private events with notification generation.
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Entity

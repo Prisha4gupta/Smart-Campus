@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
  * OpenAPI/Swagger Configuration
  * Configures API documentation for all endpoints
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Configuration
@@ -33,7 +32,7 @@ public class OpenApiConfig {
                                         "notifications, quizzes, and user authentication.")
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("Team Stack Underflow")
+                                .name("Smart Campus")
                                 .email("support@smartcampus.com"))
                         .license(new License()
                                 .name("MIT License")

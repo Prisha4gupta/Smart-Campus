@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
  * Implementation of EventService
  * Handles all business logic for event operations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Service

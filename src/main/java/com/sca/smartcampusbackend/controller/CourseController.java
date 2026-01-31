@@ -23,7 +23,6 @@ import java.util.List;
  * REST Controller for Course operations
  * Provides endpoints for managing course catalog
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestController

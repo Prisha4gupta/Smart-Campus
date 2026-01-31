@@ -17,7 +17,6 @@ import java.util.List;
  * REST Controller for Event operations
  * Provides endpoints for managing campus events and announcements
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @RestController

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 /**
  * DTO for login request
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
  * DTO for Event responses (already exists but updated for new schema)
  * Used in GET requests to return event data
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Data

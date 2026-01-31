@@ -12,7 +12,6 @@ import java.util.Optional;
  * Repository interface for Course entity
  * Provides database access methods for course operations
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @Repository

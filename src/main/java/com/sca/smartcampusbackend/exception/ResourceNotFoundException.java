@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Exception thrown when a requested resource is not found
  * Returns HTTP 404 Not Found
  * 
- * @author Team Stack Underflow
  * @since 1.0.0
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
