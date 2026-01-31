@@ -77,8 +77,6 @@
                                                 th:action="@{/admin/quizzes/{quizId}/questions/{qId}/delete(quizId=${quiz.id}, qId=${q.id})}"
                                                 method="post" class="d-inline"
                                                 onsubmit="return confirm('Delete this question?')">
-                                                <input type="hidden" th:name="${_csrf.parameterName}"
-                                                    th:value="${_csrf.token}" />
                                                 <button type="submit" class="btn btn-outline-danger" title="Delete">
                                                     <i class="bi bi-trash"></i>
                                                 </button>

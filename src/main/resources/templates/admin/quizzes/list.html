@@ -89,8 +89,6 @@
                                             <form th:action="@{/admin/quizzes/{id}/delete(id=${q.id})}" method="post"
                                                 class="d-inline"
                                                 onsubmit="return confirm('Delete this quiz and all its questions?')">
-                                                <input type="hidden" th:name="${_csrf.parameterName}"
-                                                    th:value="${_csrf.token}" />
                                                 <button type="submit" class="btn btn-outline-danger"
                                                     title="Delete Quiz">
                                                     <i class="bi bi-trash"></i>

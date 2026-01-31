@@ -27,7 +27,6 @@
                             <form
                                 th:action="@{/admin/quizzes/{quizId}/questions/{qId}/update(quizId=${quiz.id}, qId=${question.id})}"
                                 method="post">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
