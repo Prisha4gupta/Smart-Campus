@@ -1,35 +1,102 @@
-HELP.md
+# ==============================================================
+# BUILD OUTPUT
+# ==============================================================
 target/
-.mvn/wrapper/maven-wrapper.jar
+build/
 !**/src/main/**/target/
 !**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-### STS ###
+# ==============================================================
+# MAVEN
+# ==============================================================
+.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/maven-wrapper.properties
+
+# ==============================================================
+# IDE - IntelliJ IDEA
+# ==============================================================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# ==============================================================
+# IDE - Eclipse/STS
+# ==============================================================
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 
-
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
+# ==============================================================
+# IDE - NetBeans
+# ==============================================================
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# ==============================================================
+# IDE - VS Code
+# ==============================================================
 .vscode/
+
+# ==============================================================
+# OPERATING SYSTEM
+# ==============================================================
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# ==============================================================
+# LOGS
+# ==============================================================
+*.log
+logs/
+app.log
+
+# ==============================================================
+# FILE UPLOADS (Generated at runtime)
+# ==============================================================
+uploads/
+/uploads/
+
+# ==============================================================
+# SENSITIVE FILES - DO NOT COMMIT
+# ==============================================================
+# Uncomment below if you have local properties with secrets
+# src/main/resources/application-local.properties
+# src/main/resources/application-prod.properties
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# ==============================================================
+# TEST & COVERAGE
+# ==============================================================
+*.exec
+jacoco.exec
+/coverage/
+
+# ==============================================================
+# MISC
+# ==============================================================
+HELP.md
+cookies.txt
 docs-test/
-src/main/resources/application.properties
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
