@@ -58,12 +58,12 @@
                                     <td>
                                         <span th:text="${q.offeringCode + ' - ' + q.offeringTitle}">CS101 - Intro</span>
                                         <br>
-                                        <small class="text-muted" th:text="${q.offeringSemester}">Fall 2024</small>
+                                        <small class="text-muted" th:text="${q.offeringSemester}">Fall 2026</small>
                                     </td>
                                     <td>
                                         <span th:if="${q.date != null}"
                                             th:text="${#temporals.format(q.date, 'MMM dd, yyyy HH:mm')}">Dec 15,
-                                            2024</span>
+                                            2026</span>
                                         <span th:unless="${q.date != null}">-</span>
                                     </td>
                                     <td>
